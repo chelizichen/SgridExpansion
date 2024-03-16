@@ -1,0 +1,6 @@
+# nginx.conf
+
+*.conf
+
+# node_modules
+node_modules

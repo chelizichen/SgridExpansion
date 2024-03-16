@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@webantic/nginx-config-parser": "^1.6.1"
+  }
+}
