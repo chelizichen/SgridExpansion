@@ -4,6 +4,10 @@ var parser = new ConfigParser()
 var config = parser.readConfigFile('/Users/leemulus/GolandProjects/SimpExpansionServer/nginx.conf',{ parseIncludes: false })
 
 console.log('conf',config);
+
+var cmd = require('child_process')
+const re = cmd.execSync("nginx -t")
+console.log(re);
 // // to keep deterministic behaviour, set parseIncludes = false in the options
 // var configWithoutIncludes = parser.readConfigFile('/path/to/file.conf', { parseIncludes: false })
 
