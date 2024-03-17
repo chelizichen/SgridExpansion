@@ -31,11 +31,11 @@ function routes(ctx: Express): Router {
   )
   r.get("/getProxyList", function (req: Request, res: Response) {
     const conf = getCurrentConf("http")
-    const server = []
+    const servers = []
     const upstreams = []
     for (const key in conf.server) {
       if (key.startsWith("location")) {
-        server.push({ key, value: conf.server[key] })
+        servers.push({ key, value: conf.server[key] })
       }
     }
     for (const key in conf) {
@@ -45,7 +45,7 @@ function routes(ctx: Express): Router {
     }
     res.json(
       Resp.Ok({
-        server,
+        servers,
         upstreams,
         conf: parser.toConf(conf)
       })
