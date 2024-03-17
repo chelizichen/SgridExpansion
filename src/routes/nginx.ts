@@ -15,6 +15,20 @@ import {
 function routes(ctx: Express): Router {
   const r = Router()
   r.post(
+    "/nginxExpansionPreview",
+    NginxExpansionValidate,
+    validateMiddleWare,
+    async function (req: Request, res: Response, next: NextFunction) {
+      try {
+        const body = req.body as NginxExpansionDto
+        const resp = NginxExpansion(body)
+        res.send(Resp.Ok(resp))
+      } catch (e) {
+        next(e)
+      }
+    }
+  )
+  r.post(
     "/nginxExpansion",
     NginxExpansionValidate,
     validateMiddleWare,
@@ -40,7 +54,10 @@ function routes(ctx: Express): Router {
     }
     for (const key in conf) {
       if (key.startsWith("upstream")) {
-        upstreams.push({ key, value: conf[key] })
+        upstreams.push({
+          key: key.replace(/^upstream/, "").trim(),
+          value: conf[key]
+        })
       }
     }
     res.json(
