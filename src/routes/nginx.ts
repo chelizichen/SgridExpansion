@@ -5,7 +5,12 @@ import { constant } from "../constant"
 import { Now, Resp } from "../lib/utils"
 import { NginxExpansionValidate } from "../validate"
 import { validateMiddleWare } from "../configuration"
-import { NginxExpansion, backupConfAndWriteNew } from "../service"
+import {
+  NginxExpansion,
+  backupConfAndWriteNew,
+  getCurrentConf,
+  parser
+} from "../service"
 
 function routes(ctx: Express): Router {
   const r = Router()
@@ -24,6 +29,28 @@ function routes(ctx: Express): Router {
       }
     }
   )
+  r.get("/getProxyList", function (req: Request, res: Response) {
+    const conf = getCurrentConf("http")
+    const server = []
+    const upstreams = []
+    for (const key in conf.server) {
+      if (key.startsWith("location")) {
+        server.push({ key, value: conf.server[key] })
+      }
+    }
+    for (const key in conf) {
+      if (key.startsWith("upstream")) {
+        upstreams.push({ key, value: conf[key] })
+      }
+    }
+    res.json(
+      Resp.Ok({
+        server,
+        upstreams,
+        conf: parser.toConf(conf)
+      })
+    )
+  })
   return r
 }
 

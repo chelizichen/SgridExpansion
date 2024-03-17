@@ -5,7 +5,7 @@ import path from "path"
 import { getConf } from "../constant"
 import { exec, execSync } from "child_process"
 import { stdout } from "process"
-const parser = new ConfigParser()
+export const parser = new ConfigParser()
 
 export function NginxExpansion(upstreamConf: NginxExpansionDto) {
   const originConf = getCurrentConf()
