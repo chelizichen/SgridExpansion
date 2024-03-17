@@ -17,8 +17,8 @@ function routes(ctx: Express): Router {
       try {
         const body = req.body as NginxExpansionDto
         const resp = NginxExpansion(body)
-        backupConfAndWriteNew(resp)
-        res.json(Resp.Ok(resp))
+        const streamResp = await backupConfAndWriteNew(resp)
+        res.send(Resp.Ok(streamResp))
       } catch (error) {
         next(error)
       }

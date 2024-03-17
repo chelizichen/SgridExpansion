@@ -3,6 +3,8 @@ import { get } from "lodash"
 import fs from "fs"
 import path from "path"
 import { getConf } from "../constant"
+import { exec, execSync } from "child_process"
+import { stdout } from "process"
 const parser = new ConfigParser()
 
 export function NginxExpansion(upstreamConf: NginxExpansionDto) {
@@ -34,25 +36,40 @@ export function getCurrentConf(path?: string | string[]) {
 }
 
 export function backupConfAndWriteNew(newConf: string) {
-  try {
-    const isProd = process.env.SIMP_PRODUCTION === "Yes"
-    const cwd = process.cwd()
-    const rootPath = (isProd ? process.env.SIMP_SERVER_PATH : cwd) as string
-    const backupConf = parser.toConf(getCurrentConf())
-    const dirFiles = fs.readdirSync(
-      path.resolve(rootPath, getConf().historyDir)
-    )
-    fs.writeFileSync(
-      path.resolve(
-        rootPath,
-        getConf().historyDir,
-        `nginx_${dirFiles.length}.conf`
-      ),
-      backupConf,
-      "utf-8"
-    )
-    parser.writeConfigFile(getConf().nginxPath, newConf, true)
-  } catch (e) {
-    return e
-  }
+  return new Promise((resolve, reject) => {
+    try {
+      const isProd = process.env.SIMP_PRODUCTION === "Yes"
+      const cwd = process.cwd()
+      const rootPath = (isProd ? process.env.SIMP_SERVER_PATH : cwd) as string
+      const backupConf = parser.toConf(getCurrentConf())
+      const dirFiles = fs.readdirSync(
+        path.resolve(rootPath, getConf().historyDir)
+      )
+      fs.writeFileSync(
+        path.resolve(
+          rootPath,
+          getConf().historyDir,
+          `nginx_${dirFiles.length}.conf`
+        ),
+        backupConf,
+        "utf-8"
+      )
+      parser.writeConfigFile(getConf().nginxPath, newConf, true)
+      const test = exec("nginx -t")
+      let resu = ""
+      test.stdout?.on("data", function (chunk) {
+        resu += chunk.toString()
+        console.log("stdout ::", chunk.toString())
+      })
+      test.stderr?.on("data", function (chunk) {
+        console.log("stdout ::", chunk.toString())
+        resu += chunk.toString()
+      })
+      test.on("close", function () {
+        resolve(resu)
+      })
+    } catch (e) {
+      reject(e)
+    }
+  })
 }
