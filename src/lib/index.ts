@@ -17,7 +17,7 @@ export function NewHttpServerCtx(p: string): Express {
 
 export function NewSimpHttpServer(ctx: Express) {
   const SIMP_TARGET_PORT = process.env.SIMP_TARGET_PORT
-  console.log("SIMP_TARGET_PORT", SIMP_TARGET_PORT)
+  console.log("SIMP_TARGET_PORT:" + SIMP_TARGET_PORT)
   if (
     SIMP_TARGET_PORT &&
     SIMP_TARGET_PORT != "" &&
@@ -25,12 +25,12 @@ export function NewSimpHttpServer(ctx: Express) {
   ) {
     const port = Number(SIMP_TARGET_PORT)
     ctx.listen(port, function () {
-      console.log("server started at localhost:" + port)
+      console.log("child_service : server started at localhost:" + port)
     })
     return
   }
   const port = ctx.get(constant.SIMP_SERVER_PORT)
   ctx.listen(port, function () {
-    console.log("server started at localhost:" + port)
+    console.log("main_service :server started at localhost:" + port)
   })
 }
