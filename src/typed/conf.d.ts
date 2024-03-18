@@ -15,7 +15,6 @@ interface RouterConf {
   meta?: unknown
 }
 
-
 type CamelizeString<T extends PropertyKey> = T extends string
   ? string extends T
     ? string

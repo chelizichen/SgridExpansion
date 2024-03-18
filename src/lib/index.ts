@@ -17,8 +17,13 @@ export function NewHttpServerCtx(p: string): Express {
 
 export function NewSimpHttpServer(ctx: Express) {
   const SIMP_TARGET_PORT = process.env.SIMP_TARGET_PORT
-  if (SIMP_TARGET_PORT != "" && typeof Number(SIMP_TARGET_PORT) == "number") {
-    const port = ctx.get(constant.SIMP_TARGET_PORT)
+  console.log("SIMP_TARGET_PORT", SIMP_TARGET_PORT)
+  if (
+    SIMP_TARGET_PORT &&
+    SIMP_TARGET_PORT != "" &&
+    typeof Number(SIMP_TARGET_PORT) == "number"
+  ) {
+    const port = Number(SIMP_TARGET_PORT)
     ctx.listen(port, function () {
       console.log("server started at localhost:" + port)
     })

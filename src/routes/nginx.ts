@@ -10,7 +10,8 @@ import {
   backupConfAndWriteNew,
   coverConf,
   getCurrentConf,
-  parser
+  parser,
+  reloadNginx
 } from "../service"
 
 function routes(ctx: Express): Router {
@@ -44,6 +45,11 @@ function routes(ctx: Express): Router {
       }
     }
   )
+  r.post("/nginxReload", async function (_, res: Response) {
+    const streamResp = await reloadNginx()
+    res.status(200).json(Resp.Ok(streamResp))
+  })
+
   r.get("/getProxyList", function (req: Request, res: Response) {
     const conf = getCurrentConf("http")
     const servers = []
@@ -90,11 +96,19 @@ function routes(ctx: Express): Router {
     async function (req: Request, res: Response, next: NextFunction) {
       try {
         const fileName = req.query.fileName as unknown as string
-        const content = await getFile("history", fileName)
-        if (content instanceof Error) {
-          throw content
+        if (fileName !== "origin") {
+          const content = await getFile("history", fileName)
+          if (content instanceof Error) {
+            throw content
+          }
+          res.status(200).json(Resp.Ok(content))
+        } else {
+          const content = parser.toConf(getCurrentConf())
+          if (content instanceof Error) {
+            throw content
+          }
+          res.status(200).json(Resp.Ok(content))
         }
-        res.status(200).json(Resp.Ok(content))
       } catch (e) {
         next(e)
       }
@@ -106,17 +120,31 @@ function routes(ctx: Express): Router {
     async function (req: Request, res: Response, next: NextFunction) {
       try {
         const fileName = req.query.fileName as unknown as string
-        const content = await getFile("history", fileName)
-        if (content instanceof Error) {
-          return res.status(200).json(Resp.Error(-1, content.message, content))
+        if (fileName !== "origin") {
+          const content = await getFile("history", fileName)
+          if (content instanceof Error) {
+            return res
+              .status(200)
+              .json(Resp.Error(-1, content.message, content))
+          }
+          const stdResp = await coverConf(content)
+          return res.status(200).json(Resp.Ok(stdResp))
+        } else {
+          const content = parser.toConf(getCurrentConf())
+          const stdResp = await coverConf(content)
+          return res.status(200).json(Resp.Ok(stdResp))
         }
-        const stdResp = await coverConf(content)
-        return res.status(200).json(Resp.Ok(stdResp))
       } catch (e) {
         next(e)
       }
     }
   )
+  // r.post(
+  //   "/runExpandServer",
+  //   async function (req: Request, res: Response, next: NextFunction) {
+  //     const body = req.body as RunExpandServerDto
+  //   }
+  // )
   return r
 }
 

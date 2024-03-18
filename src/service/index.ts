@@ -81,3 +81,21 @@ export function backupConfAndWriteNew(newConf: string) {
     }
   })
 }
+
+export function reloadNginx() {
+  return new Promise((resolve) => {
+    const test = exec("nginx -s reload")
+    let resu = ""
+    test.stdout?.on("data", function (chunk) {
+      resu += chunk.toString()
+      console.log("stdout ::", chunk.toString())
+    })
+    test.stderr?.on("data", function (chunk) {
+      console.log("stdout ::", chunk.toString())
+      resu += chunk.toString()
+    })
+    test.on("close", function () {
+      resolve(resu)
+    })
+  })
+}
