@@ -1,7 +1,8 @@
 export enum constant {
   SIMP_SERVER_PORT = "SIMP_SERVER_PORT",
   SIMP_SERVER_CONF = "SIMP_SERVER_CONF",
-  SIMP_SERVER_STORAGE = "SIMP_SERVER_STORAGE"
+  SIMP_SERVER_STORAGE = "SIMP_SERVER_STORAGE",
+  SIMP_TARGET_PORT = "SIMP_TARGET_PORT"
 }
 export enum tables {
   eff_event = "eff_event",

@@ -3,8 +3,9 @@ import { get } from "lodash"
 import fs from "fs"
 import path from "path"
 import { getConf } from "../constant"
-import { exec, execSync } from "child_process"
-import { stdout } from "process"
+import { exec } from "child_process"
+import { getRoot } from "../configuration"
+import { Now } from "../lib/utils"
 export const parser = new ConfigParser()
 
 export function NginxExpansion(upstreamConf: NginxExpansionDto) {
@@ -35,38 +36,45 @@ export function getCurrentConf(path?: string | string[]) {
   }
 }
 
+export function coverConf(newConf: string): Promise<string> {
+  return new Promise((resolve) => {
+    parser.writeConfigFile(getConf().nginxPath, newConf, true)
+    const test = exec("nginx -t")
+    let resu = ""
+    test.stdout?.on("data", function (chunk) {
+      resu += chunk.toString()
+      console.log("stdout ::", chunk.toString())
+    })
+    test.stderr?.on("data", function (chunk) {
+      console.log("stdout ::", chunk.toString())
+      resu += chunk.toString()
+    })
+    test.on("close", function () {
+      resolve(resu)
+    })
+  })
+}
+
 export function backupConfAndWriteNew(newConf: string) {
   return new Promise((resolve, reject) => {
     try {
-      const isProd = process.env.SIMP_PRODUCTION === "Yes"
-      const cwd = process.cwd()
-      const rootPath = (isProd ? process.env.SIMP_SERVER_PATH : cwd) as string
+      const rootPath = getRoot()
       const backupConf = parser.toConf(getCurrentConf())
       const dirFiles = fs.readdirSync(
         path.resolve(rootPath, getConf().historyDir)
       )
+      const tdy = Now()
       fs.writeFileSync(
         path.resolve(
           rootPath,
           getConf().historyDir,
-          `nginx_${dirFiles.length}.conf`
+          `nginx_${dirFiles.length}_${tdy}.conf`
         ),
         backupConf,
         "utf-8"
       )
-      parser.writeConfigFile(getConf().nginxPath, newConf, true)
-      const test = exec("nginx -t")
-      let resu = ""
-      test.stdout?.on("data", function (chunk) {
-        resu += chunk.toString()
-        console.log("stdout ::", chunk.toString())
-      })
-      test.stderr?.on("data", function (chunk) {
-        console.log("stdout ::", chunk.toString())
-        resu += chunk.toString()
-      })
-      test.on("close", function () {
-        resolve(resu)
+      coverConf(newConf).then((res) => {
+        resolve(res)
       })
     } catch (e) {
       reject(e)

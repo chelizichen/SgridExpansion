@@ -1,6 +1,13 @@
 import { Resp } from "../lib/utils"
 import { validationResult } from "express-validator"
-import { existsSync, mkdirSync, readdirSync } from "fs"
+import {
+  existsSync,
+  mkdirSync,
+  readFile,
+  readdir,
+  readdirSync,
+  statSync
+} from "fs"
 import path from "path"
 import { getConf } from "../constant"
 
@@ -27,4 +34,47 @@ export function initHistroyDir() {
   if (!existsSync(histroyDirPath)) {
     mkdirSync(histroyDirPath)
   }
+}
+
+export function getRoot() {
+  const isProd = process.env.SIMP_PRODUCTION === "Yes"
+  const cwd = process.cwd()
+  const rootPath = (isProd ? process.env.SIMP_SERVER_PATH : cwd) as string
+  return rootPath
+}
+
+export function getDir(...args: string[]): Error | Promise<string[]> {
+  const dir = path.resolve(getRoot(), ...args)
+  const stats = statSync(dir)
+  if (!stats.isDirectory) {
+    return new Error(`path|${dir} | is not a dir`)
+  }
+  return new Promise((resolve, reject) => {
+    readdir(dir, function (err: NodeJS.ErrnoException | null, files: string[]) {
+      if (err != null) {
+        return reject(err)
+      }
+      resolve(files)
+    })
+  })
+}
+
+export function getFile(...args: string[]): Error | Promise<string> {
+  const file = path.resolve(getRoot(), ...args)
+  const stats = statSync(file)
+  if (!stats.isFile) {
+    return new Error(`path|${file} | is not a file`)
+  }
+  return new Promise((resolve, reject) => {
+    readFile(
+      file,
+      "utf-8",
+      function (error: NodeJS.ErrnoException | null, data: string) {
+        if (error != null) {
+          return reject(error)
+        }
+        resolve(data)
+      }
+    )
+  })
 }
