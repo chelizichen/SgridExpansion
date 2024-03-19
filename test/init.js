@@ -1,19 +1,21 @@
-var ConfigParser = require('@webantic/nginx-config-parser')
+var ConfigParser = require("@webantic/nginx-config-parser")
 var parser = new ConfigParser()
 // parse straight from file. by default, will try to resolve includes
-var config = parser.readConfigFile('/Users/leemulus/GolandProjects/SimpExpansionServer/nginx.conf',{ parseIncludes: false })
+var config = parser.readConfigFile(
+  "/Users/leemulus/GolandProjects/SimpExpansionServer/test/nginx.conf",
+  { parseIncludes: false }
+)
 
-console.log('conf',config);
+console.log("conf", config)
 
-var cmd = require('child_process')
+var cmd = require("child_process")
 const re = cmd.execSync("nginx -t")
-console.log(re);
+console.log(re)
 // // to keep deterministic behaviour, set parseIncludes = false in the options
 // var configWithoutIncludes = parser.readConfigFile('/path/to/file.conf', { parseIncludes: false })
 
 // // write direct to file (overwriting existing one)
 // parser.writeConfigFile('/path/to/newfile.conf', config, true)
-
 
 // var sampleConfig = {
 //   "server": {

@@ -14,7 +14,7 @@ export function NginxExpansion(upstreamConf: NginxExpansionDto) {
     server: upstreamConf.server
   }
   originConf.http.server[upstreamConf.locationName].proxy_pass =
-    `http://${upstreamConf.upstreamName}`
+    upstreamConf.proxyPass
   return parser.toConf(originConf)
 }
 
