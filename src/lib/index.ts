@@ -7,6 +7,7 @@ export function NewHttpServerCtx(p: string): Express {
   app.use(express.json())
   const conf = parseSimpConf(p)
   try {
+    console.log("conf", JSON.stringify(conf))
     app.set(constant.SIMP_SERVER_PORT, conf.server.port)
     app.set(constant.SIMP_SERVER_CONF, conf.server)
   } catch (e) {
@@ -18,10 +19,10 @@ export function NewHttpServerCtx(p: string): Express {
 export function NewSimpHttpServer(ctx: Express) {
   const SIMP_TARGET_PORT = process.env.SIMP_TARGET_PORT
   console.log("SIMP_TARGET_PORT:" + SIMP_TARGET_PORT)
+  console.log("SIMP_SERVER_PORT:" + String(ctx.get(constant.SIMP_SERVER_PORT)))
   if (
     SIMP_TARGET_PORT &&
-    SIMP_TARGET_PORT != "" &&
-    typeof Number(SIMP_TARGET_PORT) == "number"
+    SIMP_TARGET_PORT !== String(ctx.get(constant.SIMP_SERVER_PORT))
   ) {
     const port = Number(SIMP_TARGET_PORT)
     ctx.listen(port, function () {
@@ -33,4 +34,8 @@ export function NewSimpHttpServer(ctx: Express) {
   ctx.listen(port, function () {
     console.log("main_service :server started at localhost:" + port)
   })
+}
+
+export function NewMainThread() {
+  return process.env.SIMP_SERVER_INDEX == "1"
 }
