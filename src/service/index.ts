@@ -6,6 +6,7 @@ import { getConf } from "../constant"
 import { exec } from "child_process"
 import { getRoot } from "../configuration"
 import { Now } from "../lib/utils"
+import { Response } from "express"
 export const parser = new ConfigParser()
 
 export function NginxExpansion(upstreamConf: NginxExpansionDto) {
@@ -97,5 +98,18 @@ export function reloadNginx() {
     test.on("close", function () {
       resolve(resu)
     })
+  })
+}
+
+export function RunCommand(cmd: string, res: Response) {
+  const test = exec(cmd)
+  test.stdout?.on("data", function (chunk) {
+    res.write(`data:${JSON.stringify({ message: chunk.toString() })}\n\n`)
+  })
+  test.stderr?.on("data", function (chunk) {
+    res.write(`data:${JSON.stringify({ message: chunk.toString() })}\n\n`)
+  })
+  test.on("close", function () {
+    res.write(`data:${JSON.stringify({ message: "done" })} \n\n`)
   })
 }
