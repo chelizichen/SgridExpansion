@@ -1,6 +1,6 @@
 export enum constant {
-  SIMP_SERVER_PORT = "SIMP_SERVER_PORT",
-  SIMP_SERVER_CONF = "SIMP_SERVER_CONF",
+  SGRID_TARGET_PORT = "SGRID_TARGET_PORT",
+  SGRID_SERVER_CONF = "SGRID_SERVER_CONF",
   SIMP_SERVER_STORAGE = "SIMP_SERVER_STORAGE",
   SIMP_TARGET_PORT = "SIMP_TARGET_PORT"
 }
@@ -29,7 +29,7 @@ export const NewError = function (code: number, msg: string) {
 }
 
 export function getConf() {
-  const isProd = process.env.SIMP_PRODUCTION === "Yes"
+  const isProd = process.env.SGRID_PRODUCTION
   if (isProd) {
     return {
       nginxPath: "/etc/nginx/nginx.conf",

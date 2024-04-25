@@ -1,20 +1,21 @@
 import path from "path"
 import { constant } from "./src/constant"
-import { NewHttpServerCtx, NewSimpHttpServer } from "./src/lib"
+import { NewSgridServerCtx, NewSgridServer } from "./src/lib"
 import { errorHandler, initHistroyDir } from "./src/configuration"
-import NginxRoutes from "./src/routes/nginx"
-import ShellRoutes from "./src/routes/shell"
+import SgridController from "./src/routes/nginx"
 
-const ctx = NewHttpServerCtx("simp.yaml")
-initHistroyDir()
-const conf = ctx.get(constant.SIMP_SERVER_CONF) as SimpConf["server"]
-const servant = path.join("/", conf.name.toLowerCase())
+function boost() {
+  const ctx = NewSgridServerCtx()
+  initHistroyDir()
+  const conf = ctx.get(constant.SGRID_SERVER_CONF) as SimpConf["server"]
+  const servant = path.join("/", conf.name.toLowerCase())
+  const sgridController = new SgridController(ctx)
+  ctx.use(servant, sgridController.router!)
+  ctx.use(errorHandler())
+  NewSgridServer(ctx)
+}
 
-ctx.use(servant, NginxRoutes(ctx))
-ctx.use(servant, ShellRoutes(ctx))
-// 错误处理中间件
-ctx.use(errorHandler())
-NewSimpHttpServer(ctx)
+boost()
 
 process.on("uncaughtException", (err) => {
   console.error(err)

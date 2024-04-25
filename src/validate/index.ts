@@ -1,10 +1,4 @@
-import { body, check, query } from "express-validator"
-
-// {
-//     upstreamName:"ltsnodeserver",
-//     server:[],
-//     locationName:"location /ltsnodeserver/"
-// }
+import { body } from "express-validator"
 
 export const NginxExpansionValidate = [
   body("upstreamName").isString(),

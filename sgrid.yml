@@ -1,0 +1,9 @@
+server:
+  name: SgirdCloud
+  host: 127.0.0.1
+  port: 15411
+  protoccol: http
+  language: node
+config:
+  db_master:  root:123456@tcp(127.0.0.1:3306)/sgrid?charset=utf8&parseTime=true
+  db_slave: root:123456@tcp(127.0.0.1:3306)/sgrid?charset=utf8&parseTime=true

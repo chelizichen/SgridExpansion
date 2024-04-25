@@ -1,13 +1,13 @@
 #!/bin/bash  
 
-readonly ServerName="SimpExpansionServer"
+readonly ServerName="SgridExpansionServer"
 rm -r ./build
 rm ./$ServerName.tar.gz
 mkdir ./build
 
 npm run build
 
-cp ./simp.yaml ./build/
+cp ./sgrid.yml ./build/
 cp package.json ./build/
 cp package-lock.json ./build/
 

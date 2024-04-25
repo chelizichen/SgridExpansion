@@ -1,7 +1,0 @@
-server:
-  name: SimpExpansionServer
-  port: 8518
-  type: node-http
-  staticPath: dist # 静态资源
-  storage: root:123456@tcp(127.0.0.1:3306)/simp_server_db?charset=utf8&parseTime=true # 存储
-  main: false

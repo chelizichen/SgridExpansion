@@ -5,6 +5,7 @@ import path from "path"
 import { getConf } from "../constant"
 import { getRoot } from "../configuration"
 import { Now } from "../lib/utils"
+import { exec } from "child_process"
 export const parser = new ConfigParser()
 
 export function NginxExpansion(upstreamConf: NginxExpansionDto) {

@@ -1,13 +1,6 @@
 import { Resp } from "../lib/utils"
 import { validationResult } from "express-validator"
-import {
-  existsSync,
-  mkdirSync,
-  readFile,
-  readdir,
-  readdirSync,
-  statSync
-} from "fs"
+import { existsSync, mkdirSync, readFile, readdir, statSync } from "fs"
 import path from "path"
 import { getConf } from "../constant"
 
@@ -27,19 +20,21 @@ export function validateMiddleWare(req, res, next) {
 }
 
 export function initHistroyDir() {
-  const isProd = process.env.SIMP_PRODUCTION === "Yes"
+  const isProd = process.env.SGRID_PRODUCTION
   const cwd = process.cwd()
-  const rootPath = (isProd ? process.env.SIMP_SERVER_PATH : cwd) as string
+  const rootPath = isProd || cwd
   const histroyDirPath = path.resolve(rootPath, getConf().historyDir)
+  console.log("histroyDirPath", histroyDirPath)
+
   if (!existsSync(histroyDirPath)) {
     mkdirSync(histroyDirPath)
   }
 }
 
 export function getRoot() {
-  const isProd = process.env.SIMP_PRODUCTION === "Yes"
+  const isProd = process.env.SGRID_PRODUCTION
   const cwd = process.cwd()
-  const rootPath = (isProd ? process.env.SIMP_SERVER_PATH : cwd) as string
+  const rootPath = isProd || cwd
   return rootPath
 }
 

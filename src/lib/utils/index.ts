@@ -35,11 +35,11 @@ export function parseStorageConf(connectionString: string) {
   }
 }
 
-export function parseSimpConf(p: string): SimpConf {
-  const isProd = process.env.SIMP_PRODUCTION === "Yes"
+export function parseSimpConf(): SimpConf {
+  const isProd = process.env.SGRID_PRODUCTION
   const cwd = process.cwd()
-  const rootPath = isProd ? process.env.SIMP_SERVER_PATH : cwd
-  const fileName = isProd ? "simpProd.yaml" : p || "simp.yaml"
+  const rootPath = isProd || cwd
+  const fileName = isProd ? "sgridProd.yml" : "sgrid.yml"
   const confPath = path.join(rootPath as string, fileName)
   const content = readFileSync(confPath, "utf-8")
   const conf = yaml.load(content) as SimpConf
@@ -87,18 +87,18 @@ export function FMT_DAY(v) {
 }
 
 export const Resp = {
-  Ok: function (Data) {
+  Ok: function (data) {
     return {
-      Code: 0,
-      Message: "ok",
-      Data
+      code: 0,
+      message: "ok",
+      data
     }
   },
-  Error: function (Code, Message, Data) {
+  Error: function (code, message, data) {
     return {
-      Code,
-      Message,
-      Data
+      code,
+      message,
+      data
     }
   }
 }
