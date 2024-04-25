@@ -12,7 +12,7 @@ import {
 } from "../service"
 import { Controller, Get, Post, PreHandle } from "../lib/utils/h"
 
-@Controller("/nginxExpansionPreview")
+@Controller("/nginx")
 class SgridController {
   public ctx: Express
   public router: Router | undefined
@@ -20,7 +20,7 @@ class SgridController {
     this.ctx = ctx
   }
 
-  @Post("/nginxExpansionPreview")
+  @Post("/expansionPreview")
   @PreHandle([NginxExpansionValidate, validateMiddleWare])
   async previewNginx(req: Request, res: Response, next: NextFunction) {
     try {
@@ -32,7 +32,7 @@ class SgridController {
     }
   }
 
-  @Post("/nginxExpansion")
+  @Post("/expansion")
   @PreHandle([NginxExpansionValidate, validateMiddleWare])
   async nginxExpansion(req: Request, res: Response, next: NextFunction) {
     try {
@@ -45,7 +45,7 @@ class SgridController {
     }
   }
 
-  @Post("/nginxReload")
+  @Post("/reload")
   async nginxReload(req: Request, res: Response, next: NextFunction) {
     try {
       const streamResp = await reloadNginx()
