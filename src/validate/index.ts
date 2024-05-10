@@ -1,8 +1,3 @@
 import { body } from "express-validator"
 
-export const NginxExpansionValidate = [
-  body("upstreamName").isString(),
-  body("server").isArray(),
-  body("locationName").isString(),
-  body("proxyPass").isString()
-]
+export const NginxExpansionValidate = [body("content").isString()]
