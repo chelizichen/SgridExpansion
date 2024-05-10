@@ -1,4 +1,5 @@
-import { Resp } from "../lib/utils"
+import { Resp } from "sgridnode/build/main"
+
 import { validationResult } from "express-validator"
 import { existsSync, mkdirSync, readFile, readdir, statSync } from "fs"
 import path from "path"

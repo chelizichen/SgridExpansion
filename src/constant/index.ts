@@ -1,9 +1,3 @@
-export enum constant {
-  SGRID_TARGET_PORT = "SGRID_TARGET_PORT",
-  SGRID_SERVER_CONF = "SGRID_SERVER_CONF",
-  SIMP_SERVER_STORAGE = "SIMP_SERVER_STORAGE",
-  SIMP_TARGET_PORT = "SIMP_TARGET_PORT"
-}
 export enum tables {
   eff_event = "eff_event",
   eff_eve_comment = "eff_eve_comment",
